@@ -3,7 +3,7 @@
 //
 //   node src/test_planner.js
 //
-// The functions under test are lifted out of planner.html rather than copied,
+// The functions under test are lifted out of index.html rather than copied,
 // so the test cannot pass against a stale duplicate. What it pins down:
 //
 //   * an unlocked plan is unchanged by the locking code existing
@@ -20,7 +20,7 @@
 //     a ruin cannot
 const fs = require('fs'), path = require('path');
 const SITE = path.dirname(__dirname);
-const html = fs.readFileSync(path.join(SITE, 'planner.html'), 'utf8');
+const html = fs.readFileSync(path.join(SITE, 'index.html'), 'utf8');
 
 function grab(name){
   const start = html.indexOf('function ' + name + '(');
