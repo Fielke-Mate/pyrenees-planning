@@ -5,7 +5,7 @@
 # already gone live, so status is not a reliable signal. This fetches the real
 # file with a cache-buster and checks a marker string from the local copy.
 set -u
-URL="https://fielke-mate.github.io/hrp-map/index.html"
+URL="https://fielke-mate.github.io/pyrenees-planning/index.html"
 MARKER="${1:-$(grep -o 'const TRACK=\[[^,]*,[^,]*,' index.html | head -1)}"
 for i in $(seq 1 40); do
   BODY=$(curl -sS "${URL}?cb=$(date +%s)" 2>/dev/null || true)

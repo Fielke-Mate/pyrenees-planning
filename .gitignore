@@ -3,3 +3,16 @@ src/data/.shelters/
 src/.offline_mode
 src/data/.links/
 src/data/.access/
+
+# Dependencies and caches
+node_modules/
+__pycache__/
+*.pyc
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+secrets*
+credentials*
