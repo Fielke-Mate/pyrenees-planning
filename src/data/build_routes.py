@@ -8,11 +8,13 @@ precision), and reports any place it genuinely had to jump.
 Output: one ordered [lat, lon] polyline per route, plus stage boundaries
 expressed as km along that polyline.
 """
-import json, math, re, sys
+import os, json, math, re, sys
 from collections import defaultdict
 
-SP = r'scratchpad'
-rels = json.load(open(SP + r'\route_rels.json'))
+# Intermediate files; git-ignored, shared by every step of the pipeline.
+SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.routes')
+os.makedirs(SP, exist_ok=True)
+rels = json.load(open(os.path.join(SP, 'route_rels.json')))
 
 
 def order_key(n):
@@ -114,7 +116,7 @@ def simplify(pts, tol_m):
 
 out_all = {}
 for route in ('GR10', 'GR11', 'HRP'):
-    byid = {e['id']: e for e in json.load(open(SP + ('\\geo_%s.json' % route)))}
+    byid = {e['id']: e for e in json.load(open(os.path.join(SP, 'geo_%s.json' % route)))}
     ways, owner = [], []
     for r in MAIN[route]:
         e = byid.get(r['id'])
@@ -178,6 +180,6 @@ for route in ('GR10', 'GR11', 'HRP'):
                           runs=len(lens), jumps=jumps)
     json.dump({'id': route.lower(), 'km': round(stotal, 2),
                'points': [[round(p[0], 6), round(p[1], 6)] for p in simp]},
-              open(SP + ('\\route_%s.json' % route.lower()), 'w'))
+              open(os.path.join(SP, 'route_%s.json' % route.lower()), 'w'))
 
 print('\nwrote route_gr10.json / route_gr11.json / route_hrp.json')

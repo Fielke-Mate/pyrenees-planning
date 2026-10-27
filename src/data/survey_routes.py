@@ -5,9 +5,11 @@ Banyuls) with their tagging, so we can judge coverage before committing to a
 source. Tags only at this stage - geometry comes after, for whichever
 relations turn out to be the real ones.
 """
-import json, sys, time, urllib.request, urllib.parse
+import os, json, sys, time, urllib.request, urllib.parse
 
-SP = r'scratchpad'
+# Intermediate files; git-ignored, shared by every step of the pipeline.
+SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.routes')
+os.makedirs(SP, exist_ok=True)
 BBOX = '42.0,-2.2,43.6,3.4'          # Hendaye -> Banyuls, both slopes
 
 Q = ('[out:json][timeout:300];('
@@ -43,7 +45,7 @@ if not d:
     sys.exit('overpass unavailable')
 rels = d['elements']
 print('\n%d candidate relations\n' % len(rels))
-json.dump(rels, open(SP + r'\route_rels.json', 'w'))
+json.dump(rels, open(os.path.join(SP, 'route_rels.json'), 'w'))
 
 
 def bucket(t):

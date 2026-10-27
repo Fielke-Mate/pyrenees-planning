@@ -3,10 +3,12 @@
 If they cross rarely, route-hopping is an edge case. If they meet often, the
 data model has to be a graph from the start. Uses the cached geometry.
 """
-import json, math, re
+import os, json, math, re
 
-SP = r'scratchpad'
-rels = json.load(open(SP + r'\route_rels.json'))
+# Intermediate files; git-ignored, shared by every step of the pipeline.
+SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.routes')
+os.makedirs(SP, exist_ok=True)
+rels = json.load(open(os.path.join(SP, 'route_rels.json')))
 
 
 def order_key(n):
@@ -24,7 +26,7 @@ for k in MAIN:
 
 
 def pts_of(route):
-    byid = {e['id']: e for e in json.load(open(SP + ('\\geo_%s.json' % route)))}
+    byid = {e['id']: e for e in json.load(open(os.path.join(SP, 'geo_%s.json' % route)))}
     out = []
     for r in MAIN[route]:
         e = byid.get(r['id'])

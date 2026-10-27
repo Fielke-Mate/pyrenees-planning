@@ -9,10 +9,12 @@ For each suspicious join this checks:
   b) the true minimum distance between ANY point of one stage and any of the
      next, which is 0 if they genuinely touch anywhere
 """
-import json, math, re
+import os, json, math, re
 
-SP = r'scratchpad'
-rels = json.load(open(SP + r'\route_rels.json'))
+# Intermediate files; git-ignored, shared by every step of the pipeline.
+SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.routes')
+os.makedirs(SP, exist_ok=True)
+rels = json.load(open(os.path.join(SP, 'route_rels.json')))
 
 
 def order_key(n):
@@ -67,7 +69,7 @@ def mindist(A, B, stride=1):
 
 
 for route in ('GR10', 'GR11', 'HRP'):
-    byid = {e['id']: e for e in json.load(open(SP + ('\\geo_%s.json' % route)))}
+    byid = {e['id']: e for e in json.load(open(os.path.join(SP, 'geo_%s.json' % route)))}
     print('=' * 78)
     print(route)
     stages = [(r['tags'].get('name'), byid.get(r['id']), r['tags'].get('from'), r['tags'].get('to'))
