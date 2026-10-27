@@ -1,6 +1,12 @@
-# HRP map — hosting and offline use
+# Pyrenees planning — hosting and offline use
 
-Everything in this folder is static. No build step, no server-side anything.
+The front page, `index.html`, is the **Pyrenees traverse planner** (GR10, GR11,
+HRP). The original single-trip map for the Pont d'Espagne to Luchon section,
+12-17 Sep 2026, is archived at `hrp-2026.html`; `planner.html` only forwards
+old links and home-screen icons to the front page. Sections 2, 3 and Building
+below describe the archived map.
+
+Everything in this folder is static. No server-side anything.
 
 ## 1. Put it online
 
@@ -52,21 +58,24 @@ the route on a blank background, which is still perfectly readable.
 
 | File | |
 |---|---|
-| `index.html` | The whole map. Leaflet is inlined, so no CDN. |
-| `sw.js` | Service worker: caches the page, and tiles as you view them. |
-| `manifest.webmanifest` | Makes it installable. |
+| `index.html` | The planner, and the front page. Hand-edited, no build step. |
+| `planner.html` | Forwards to the front page, keeping any plan in the link. |
+| `hrp-2026.html` | The archived Sep 2026 trip map. Leaflet is inlined, so no CDN. |
+| `sw.js` | Service worker: caches the pages and data, and tiles as you view them. |
+| `planner.webmanifest` | Makes the planner installable. |
+| `manifest.webmanifest` | Makes the archived map installable. |
 | `icon-*.png` | Home screen icons, drawn from the route shape. |
 
 ## Updating it
 
-Re-upload `index.html`. The service worker is network-first for the page, so
+Re-upload the page you changed. The service worker is network-first for the page, so
 a phone with signal picks up the new version on next open. Bump `VERSION` in
 `sw.js` if you change `sw.js` itself. The tile cache is deliberately kept in a
 separate, unversioned cache so a redeploy never throws away a 22 MB download.
 
 ## Building
 
-`index.html` is generated, not hand-edited. The source and the whole toolchain
+`hrp-2026.html` is generated, not hand-edited. The source and the whole toolchain
 live in `src/`:
 
 ```
@@ -76,10 +85,11 @@ python src/build.py
 That inlines Leaflet 1.9.4 (vendored in `src/`, so no CDN and the page works
 with no signal), adds the PWA tags, sets `crossOrigin` on the tile layer, and
 appends the offline block. It is deterministic - rebuilding without changing
-`src/hrp_wallon_luchon.html` reproduces `index.html` byte for byte.
+`src/hrp_wallon_luchon.html` reproduces `hrp-2026.html` byte for byte. The same
+run lints the planner (`index.html`) with the guards below.
 
-**`src/hrp_wallon_luchon.html` is the only source.** `index.html` is output.
-Editing `index.html` directly gets overwritten by the next build.
+**`src/hrp_wallon_luchon.html` is the only source.** `hrp-2026.html` is output.
+Editing `hrp-2026.html` directly gets overwritten by the next build.
 
 After cloning, run this once so the pre-commit hook is active:
 
@@ -94,7 +104,7 @@ Each guard exists because the mistake behind it actually happened here.
 | Guard | The mistake it prevents |
 |---|---|
 | a second copy of the source | An edit went into a top-level copy while the build read `src/`, producing a page silently missing the change |
-| `--check` (pre-commit hook) | Committing an `index.html` that does not match its source |
+| `--check` (pre-commit hook) | Committing an `hrp-2026.html` that does not match its source |
 | temporal-dead-zone lint | A module-level `const` read by a function that startup calls earlier in the file. It throws at load and aborts the rest of the script, but hoisted functions stay callable so the page looks alive. `node --check` cannot see it - it is a runtime error. This happened twice. |
 | popup consistency | A popup's heading or elevation drifting from its `shelterIndex` entry. Renaming a hut moved the popup's key but left the old name in its `<h4>`, so the map kept announcing "Cabane de Mommour"; correcting entry elevations left two popups quoting superseded figures. Elevation tolerance 30 m. |
 | `__hrpReady` sentinel | Tests asserting "the page works" when the script actually threw partway through |

@@ -1,13 +1,13 @@
-"""Build site/index.html from src/hrp_wallon_luchon.html.
+"""Build hrp-2026.html, the archived Sep 2026 trip map, from src/hrp_wallon_luchon.html.
 
-  python src/build.py            rebuild index.html
-  python src/build.py --check    verify index.html is current; write nothing
+  python src/build.py            rebuild hrp-2026.html
+  python src/build.py --check    verify hrp-2026.html is current; write nothing
 
 Guards against the mistakes this project has actually made:
 
   * a second copy of the source outside src/, which let an edit go into one
     file while the build read the other and silently produced a stale page
-  * committing an index.html that does not match its source (--check, wired
+  * committing an hrp-2026.html that does not match its source (--check, wired
     into .githooks/pre-commit)
   * module-level `const`/`let` read by a function that startup calls earlier
     in the file - a temporal dead zone that throws at load, leaves hoisted
@@ -18,8 +18,8 @@ Guards against the mistakes this project has actually made:
   * an inline onclick= naming a function that no longer exists, which fails
     silently: the button renders, the click throws into the void
 
-planner.html is not generated, but it is linted here so the same guards cover
-the tool that is now doing the planning.
+index.html, the planner and front page, is not generated, but it is linted
+here so the same guards cover the tool that is now doing the planning.
 """
 import re, os, sys, glob, subprocess, tempfile
 
@@ -27,8 +27,8 @@ SP = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(SP)
 CHECK = '--check' in sys.argv
 SRC = os.path.join(SP, 'hrp_wallon_luchon.html')
-OUT = os.path.join(ROOT, 'index.html')
-PLANNER = os.path.join(ROOT, 'planner.html')
+OUT = os.path.join(ROOT, 'hrp-2026.html')
+PLANNER = os.path.join(ROOT, 'index.html')
 
 
 def die(msg):
@@ -123,7 +123,7 @@ def tdz_lint(text):
             entries.append((c.group(1) + '()', i, reachable(c.group(1))))
         # Must cover every shape a top-level IIFE takes, or the lint simply
         # finds no entry point and reports nothing however broken the file
-        # is: planner.html opens with `(async function init(){`, which an
+        # is: the planner opens with `(async function init(){`, which an
         # earlier `\(function\s*\(` matched not at all.
         if (re.match(r'\(\s*(?:async\s+)?function\b', ln)
                 or re.match(r'\(\s*(?:async\s*)?\([^)]*\)\s*=>', ln)):
@@ -281,8 +281,8 @@ if '__hrpReady' not in src:
     die('the __hrpReady startup sentinel is missing - tests rely on it to tell '
         '"the script ran" from "the script threw but hoisted functions still exist"')
 
-# --- guard 4: lint planner.html the same way ------------------------------
-# planner.html has no build step, so nothing was checking it. The locked-stop
+# --- guard 4: lint the planner (index.html) the same way -----------------
+# The planner has no build step, so nothing was checking it. The locked-stop
 # work added inline onclick= handlers in popup HTML, which is a new way for a
 # rename to break a button without any error at build time.
 def handler_lint(text):
@@ -323,11 +323,11 @@ if os.path.exists(PLANNER):
     tmp = None
     probs = tdz_lint(ptext)
     if probs:
-        die('planner.html temporal dead zone:\n'
+        die('planner (index.html) temporal dead zone:\n'
             + '\n'.join('   ' + p for p in probs))
     probs = handler_lint(ptext)
     if probs:
-        die('planner.html inline handlers:\n' + '\n'.join('   ' + p for p in probs))
+        die('planner (index.html) inline handlers:\n' + '\n'.join('   ' + p for p in probs))
     # syntax-check the inline script if node is around
     blocks = re.findall(r'<script>(.*?)</script>', ptext, re.S)
     try:
@@ -336,11 +336,11 @@ if os.path.exists(PLANNER):
         open(tmp, 'w', encoding='utf-8').write(blocks[-1])
         r = subprocess.run(['node', '--check', tmp], capture_output=True, text=True)
         if r.returncode != 0:
-            die('planner.html inline script does not parse:\n   '
+            die('planner (index.html) inline script does not parse:\n   '
                 + (r.stderr or r.stdout).strip().replace('\n', '\n   '))
-        print('planner.html  guards passed: no TDZ, handlers resolve, script parses')
+        print('planner (index.html)  guards passed: no TDZ, handlers resolve, script parses')
     except FileNotFoundError:
-        print('planner.html  guards passed: no TDZ, handlers resolve (node absent, '
+        print('planner (index.html)  guards passed: no TDZ, handlers resolve (node absent, '
               'parse not checked)')
     finally:
         if tmp and os.path.exists(tmp):
@@ -350,16 +350,16 @@ if os.path.exists(PLANNER):
 # --- write, or check ------------------------------------------------------
 if CHECK:
     if not os.path.exists(OUT):
-        die('index.html does not exist - run: python src/build.py')
+        die('hrp-2026.html does not exist - run: python src/build.py')
     current = open(OUT, encoding='utf-8').read()
     if current != src:
-        die('index.html is stale - it does not match src/hrp_wallon_luchon.html.\n'
+        die('hrp-2026.html is stale - it does not match src/hrp_wallon_luchon.html.\n'
             '   Run: python src/build.py   then commit both.')
-    print('index.html is current (%.1f KB)' % (len(src) / 1024))
+    print('hrp-2026.html is current (%.1f KB)' % (len(src) / 1024))
     sys.exit(0)
 
 open(OUT, 'w', encoding='utf-8').write(src)
-print('source     %8.1f KB' % (orig_len / 1024))
-print('index.html %8.1f KB' % (len(src) / 1024))
+print('source        %8.1f KB' % (orig_len / 1024))
+print('hrp-2026.html %8.1f KB' % (len(src) / 1024))
 print('leaflet inlined, PWA tags added, crossOrigin set, offline block appended')
 print('guards passed: single source, no TDZ, popups consistent, sentinel present')

@@ -23,7 +23,7 @@ Ordered by risk to a hiker first, then by usefulness.
 ## Open questions
 
 1. **Who is the next version for** — you and walking partners, or a public launch?
-2. **The original HRP tool at the root URL** — keep as an archive, or make the planner the front page?
+2. ~~**The original HRP tool at the root URL** — keep as an archive, or make the planner the front page?~~ **Decided:** the planner is the front page; the old tool is archived at `hrp-2026.html`.
 3. **Private or reported-closed huts** — default: never auto-planned, but lockable by a hiker who knows they are open. Ruined and demolished huts can be neither planned nor locked. Change this?
 4. **Multi-route plans** — should the planner choose where to switch routes, or should you?
 5. **refuges.info** — happy to use it as a verification source (external dependency, CC BY-SA)?

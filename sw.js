@@ -9,7 +9,7 @@
 // the tiles with `Cache-Control: max-age=604800` and `Access-Control-Allow-Origin: *`,
 // so responses are CORS-readable (not opaque) and carry no storage-quota padding.
 
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL = 'hrp-shell-' + VERSION;
 const TILES = 'hrp-tiles';           // intentionally unversioned
 const TILE_HOST = /(^|\.)tile\.opentopomap\.org$/;
@@ -19,6 +19,7 @@ const SHELL_URLS = [
   './',
   './index.html',
   './planner.html',
+  './hrp-2026.html',
   './leaflet.js',
   './leaflet.css',
   './manifest.webmanifest',
@@ -127,7 +128,7 @@ self.addEventListener('fetch', e => {
           // is better than whatever this is, if there is one.
           return caches.match(req).then(hit => hit || res);
         }))
-        // Only a page navigation may fall back to the HRP page. Answering a
+        // Only a page navigation may fall back to the front page (the planner). Answering a
         // failed data request with HTML made the planner's JSON parse throw.
         .catch(() => caches.match(req).then(hit => hit
           || (req.mode === 'navigate' ? caches.match('./index.html') : Response.error())))

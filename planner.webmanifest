@@ -2,7 +2,7 @@
   "name": "Pyrenees traverse planner",
   "short_name": "Pyrenees planner",
   "description": "Plan multi-day sections of the GR10, GR11 and HRP: places to sleep, daily distance and climb, and maps saved for use with no signal.",
-  "start_url": "./planner.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

@@ -1,8 +1,8 @@
 {
-  "name": "HRP Pont d'Espagne to Luchon",
+  "name": "HRP Pont d'Espagne to Luchon (archive)",
   "short_name": "HRP 12-17 Sep",
   "description": "Route, shelters and live GPS position for the Pont d'Espagne to Luchon section of the Haute Randonnee Pyreneenne, 12-17 September 2026.",
-  "start_url": "./index.html",
+  "start_url": "./hrp-2026.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
