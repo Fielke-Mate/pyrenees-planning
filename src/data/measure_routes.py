@@ -4,10 +4,12 @@ Tags existing does not mean the line is walkable end to end. This measures, per
 route: total length, whether each stage's ways join up internally, and whether
 consecutive stages meet. Gaps are what would break a planner.
 """
-import json, math, re, sys, time, urllib.request, urllib.parse
+import os, json, math, re, sys, time, urllib.request, urllib.parse
 
-SP = r'scratchpad'
-rels = json.load(open(SP + r'\route_rels.json'))
+# Intermediate files; git-ignored, shared by every step of the pipeline.
+SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.routes')
+os.makedirs(SP, exist_ok=True)
+rels = json.load(open(os.path.join(SP, 'route_rels.json')))
 
 
 def pick(pred):
@@ -65,7 +67,7 @@ for route, lst in MAIN.items():
     if not d:
         print('  FAILED'); continue
     geo[route] = d['elements']
-    json.dump(d['elements'], open(SP + ('\\geo_%s.json' % route), 'w'))
+    json.dump(d['elements'], open(os.path.join(SP, 'geo_%s.json' % route), 'w'))
     print('  got %d relations' % len(d['elements']))
     time.sleep(5)
 
@@ -122,5 +124,5 @@ for route, els in geo.items():
     for nm, m in bad[:8]:
         print('     gap before %-26s %d m' % ((nm or '')[:26], m))
 
-json.dump(summary, open(SP + r'\route_summary.json', 'w'))
+json.dump(summary, open(os.path.join(SP, 'route_summary.json'), 'w'))
 print('\n' + json.dumps(summary, indent=1))

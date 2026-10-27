@@ -26,7 +26,7 @@ from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 CACHE = os.path.join(HERE, '.links')
-UA = 'Pyrenees traverse planner (link verification; fielke-mate.github.io/hrp-map)'
+UA = 'Pyrenees traverse planner (link verification; fielke-mate.github.io/pyrenees-planning)'
 SAME_KM = 0.3
 os.makedirs(CACHE, exist_ok=True)
 sys.stdout.reconfigure(encoding='utf-8')

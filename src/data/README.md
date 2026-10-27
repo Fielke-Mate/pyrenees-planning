@@ -2,8 +2,8 @@
 
 Produces `data/routes/{gr10,gr11,hrp}.json` from OpenStreetMap.
 
-Run in order. Each step caches to the scratchpad, so later steps can be
-re-run without re-querying Overpass.
+Run in order. Each step caches to `src/data/.routes/` (git-ignored), so later
+steps can be re-run without re-querying Overpass.
 
 | script | does |
 |---|---|

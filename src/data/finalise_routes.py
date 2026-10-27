@@ -4,7 +4,9 @@ intervals along it, all normalised west to east (Atlantic -> Mediterranean).
 import json, math, os, re, sys
 from collections import defaultdict
 
-SP = r'scratchpad'
+# Intermediate files; git-ignored, shared by every step of the pipeline.
+SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.routes')
+os.makedirs(SP, exist_ok=True)
 OUT = os.path.join('site', 'data', 'routes')
 os.makedirs(OUT, exist_ok=True)
 rels = json.load(open(os.path.join(SP, 'route_rels.json')))

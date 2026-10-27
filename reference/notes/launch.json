@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8777", "--directory", "site"],
+      "port": 8777
+    },
+    {
+      "name": "offline-test",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["site/src/offline_test_server.py"],
+      "port": 8777
+    }
+  ]
+}
